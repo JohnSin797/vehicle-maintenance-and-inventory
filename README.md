@@ -2,21 +2,21 @@
 
 # Installation
 <ul>
-    <li>#Go to folder where you want to save, then open terminal.</li>
-    <li>#Type:</li>
+    <li>Go to folder where you want to save, then open terminal.</li>
+    <li>Type:</li>
     <li>git clone https://github.com/JohnSin797/vehicle-maintenance-and-inventory.git</li>
-    <li>#After cloning, type:</li>
+    <li>After cloning, type:</li>
     <li>composer install</li>
     <li>npm install</li>
-    <li>#After installing, create .env file. Just copy what's inside .env.example file into it.</li>
-    <li>#Then type in your terminal:</li>
+    <li>After installing, create .env file. Just copy what's inside .env.example file into it.</li>
+    <li>Then type in your terminal:</li>
     <li>php artisan migrate</li>
     <li>php artisan db:seed</li>
 </ul>
 
 # To run:
 <ul>
-    <li>#Open your terminal and type (one terminal for each command):</li>
+    <li>Open your terminal and type (one terminal for each command):</li>
     <li>php artisan serve (type this if you're not using Laragon)</li>
     <li>npm run dev (no need for this if system is done and ready for implementation)</li>
 </ul>
