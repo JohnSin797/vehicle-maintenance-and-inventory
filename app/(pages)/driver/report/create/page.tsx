@@ -46,7 +46,7 @@ export default function Create() {
                     <div className="w-full space-y-2">
                         <div className="group w-full">
                             <label htmlFor="report_date" className="text-xs font-bold">Date:</label>
-                            <input onChange={handleOnChange} type="date" name="report_date" id="report_date" className="p-2 rounded border border-black w-full" />
+                            <input onChange={handleOnChange} type="datetime-local" name="report_date" id="report_date" className="p-2 rounded border border-black w-full" />
                         </div>
                         <div className="group w-full">
                             <label htmlFor="bus_number" className="text-xs font-bold">Bus Number:</label>

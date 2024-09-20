@@ -10,7 +10,15 @@ html, body {
 }
 
 body {
-  background-image: url('../assets/images/893ab0aa-3be4-4764-add3-7bfc03740149.jpg');
+  background-image: url('../assets/images/background-img.jpg');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-img {
+  background-image: url('../assets/images/background-img.jpg');
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
