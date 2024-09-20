@@ -2,13 +2,14 @@ import connect from "@/lib/db"
 import User from "@/lib/modals/users";
 import { NextResponse } from "next/server"
 import { Types } from "mongoose";
+import * as argon2 from "argon2";
 
 const ObjectId = Types.ObjectId;
 
 export const GET = async () => {
     try {
         await connect();
-        const users = await User.find();
+        const users = await User.find().select('-password');
         return new NextResponse(JSON.stringify(users), {status: 200});
     } catch (error: unknown) {
         let message = '';
@@ -23,10 +24,14 @@ export const POST = async (request: Request) => {
     try {
         const body = await request.json();
         await connect();
-        const newUser = new User(body);
+        const hashedPassword = await argon2.hash(body?.password);
+        const newUser = new User({
+            ...body,
+            password: hashedPassword
+        });
         await newUser.save();
 
-        return new NextResponse(JSON.stringify({message: 'New user created', user: newUser}), {status: 200});
+        return new NextResponse(JSON.stringify({message: 'New user created', user: newUser.select('-password')}), {status: 200});
     } catch (error: unknown) {
         let message = '';
         if (error instanceof Error) {
@@ -54,7 +59,7 @@ export const PATCH = async (request: Request) => {
             { new: true }
         );
         if (!updateUser) {
-            return new NextResponse(JSON.stringify({message: 'User update failed'}), {status: 400});
+            return new NextResponse(JSON.stringify({message: 'User update failed', user: updateUser.select('-password')}), {status: 400});
         }
         return new NextResponse(JSON.stringify({message: 'User is updated'}), {status: 200});
     } catch (error: unknown) {

@@ -33,7 +33,11 @@ const userSchema = new Schema(
         position: {
             type: String,
             required: true,
-        }
+        },
+        forgot_password_token: String,
+        forgot_password_token_expiry: Date,
+        verify_token: String,
+        verify_token_expiry: Date,
     },
     {
         timestamps: true,
