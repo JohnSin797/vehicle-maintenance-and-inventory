@@ -3,15 +3,19 @@ import User from "@/lib/modals/users";
 import { NextResponse } from "next/server"
 import { Types } from "mongoose";
 
-const ObjectId = require("mongoose").Types.ObjectId;
+const ObjectId = Types.ObjectId;
 
 export const GET = async () => {
     try {
         await connect();
         const users = await User.find();
         return new NextResponse(JSON.stringify(users), {status: 200});
-    } catch (error: any) {
-        return new NextResponse('ERROR: ' + error?.message, {status: 500});
+    } catch (error: unknown) {
+        let message = '';
+        if (error instanceof Error) {
+            message = error.message
+        }
+        return new NextResponse('ERROR: ' + message, {status: 500});
     }
 }
 
@@ -23,8 +27,12 @@ export const POST = async (request: Request) => {
         await newUser.save();
 
         return new NextResponse(JSON.stringify({message: 'New user created', user: newUser}), {status: 200});
-    } catch (error: any) {
-        return new NextResponse('ERROR: ' + error?.message, {status: 500});
+    } catch (error: unknown) {
+        let message = '';
+        if (error instanceof Error) {
+            message = error.message
+        }
+        return new NextResponse('ERROR: ' + message, {status: 500});
     }
 }
 
@@ -49,8 +57,12 @@ export const PATCH = async (request: Request) => {
             return new NextResponse(JSON.stringify({message: 'User update failed'}), {status: 400});
         }
         return new NextResponse(JSON.stringify({message: 'User is updated'}), {status: 200});
-    } catch (error: any) {
-        return new NextResponse('ERROR: ' + error?.message, {status: 500});
+    } catch (error: unknown) {
+        let message = '';
+        if (error instanceof Error) {
+            message = error.message
+        }
+        return new NextResponse('ERROR: ' + message, {status: 500});
     }
 }
 
@@ -76,7 +88,11 @@ export const DELETE = async (request: Request) => {
         }
 
         return new NextResponse(JSON.stringify({message: 'User deleted successfully'}), {status: 200});
-    } catch (error: any) {
-        return new NextResponse('ERROR: ' + error?.message, {status: 500});
+    } catch (error: unknown) {
+        let message = '';
+        if (error instanceof Error) {
+            message = error.message
+        }
+        return new NextResponse('ERROR: ' + message, {status: 500});
     }
 }

@@ -22,8 +22,8 @@ const connect = async () => {
         })
         console.log('connected');
     } catch (error: any) {
-        console.log('ERROR: ', error);
-        throw new Error('ERROR: ', error);
+        console.log('ERROR: ', error?.message);
+        throw new Error('ERROR: ', error?.message);
     }
 }
 
