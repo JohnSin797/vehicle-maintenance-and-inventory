@@ -8,7 +8,7 @@ import { createSigner } from "fast-jwt";
 
 const ObjectId = Types.ObjectId;
 
-export const GET = async (request: Request) => {
+export const GET = async () => {
     try {
         const response = NextResponse.json({message: 'OK'}, {status: 200});
         response.cookies.set('token', '', { httpOnly: true, expires: new Date(0) });

@@ -1,9 +1,5 @@
 'use client'
 
-import Link from "next/link"
-import backImg from "@/assets/images/back-icon.jpg"
-import Image from "next/image"
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAuthStore } from "@/app/stores/auth";
 import axios from "axios";
@@ -33,15 +29,10 @@ interface ReportState {
 
 export default function Report() {
     const store = useAuthStore()
-    const [searchKey, setSearchKey] = useState<string>('')
     const [reports, setReports] = useState<ReportState>({
         reports: [],
         loading: true
     })
-
-    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchKey(e.target.value)
-    }
 
     const getReports = async (id: string) => {
         await axios.get(`/api/drivers?driverId=${id}`)
@@ -63,10 +54,6 @@ export default function Report() {
     const getUser = () => {
         const user = store.user
         getReports(user.id)
-    }
-
-    const handleSearch = async (e: FormEvent) => {
-        e.preventDefault()
     }
 
     return(

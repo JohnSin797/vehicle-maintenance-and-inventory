@@ -1,6 +1,5 @@
 'use client'
 
-import Link from "next/link"
 import { FaRegBell } from "react-icons/fa";
 import personImg from "@/assets/images/person-icon.jpg";
 import Image from "next/image";
@@ -27,14 +26,14 @@ interface Notification {
 
 interface NotificationState {
     notifications: Notification[];
-    loading: Boolean;
+    loading: boolean;
 }
 
 export default function Navigation() {
     const router = useRouter()
     const store = useAuthStore()
-    const [profileModal, setProfileModal] = useState<Boolean>(false)
-    const [notificationModal, setNotificationModal] = useState<Boolean>(false)
+    const [profileModal, setProfileModal] = useState<boolean>(false)
+    const [notificationModal, setNotificationModal] = useState<boolean>(false)
     const [unreadCount, setUnreadCount] = useState<number>(0)
     const [notifications, setNotifications] = useState<NotificationState>({
         notifications: [],
@@ -43,7 +42,7 @@ export default function Navigation() {
 
     const logout = async () => {
         await axios.get('/api/auth')
-        .then(response => {
+        .then(() => {
             store.removeUser()
             router.push('/auth/sign-in')
         })

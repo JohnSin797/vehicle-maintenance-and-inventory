@@ -18,8 +18,8 @@ export default function SignIn() {
         email: '',
         password: '',
     })
-    const [buttonDisabled, setButtonDisabled] = useState<Boolean>(false)
-    const [isLoading, setIsLoading] = useState<Boolean>(false)
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const router = useRouter()
     const store = useAuthStore()
 
@@ -62,6 +62,12 @@ export default function SignIn() {
 
     return(
         <div className="w-full min-h-screen flex justify-center items-center">
+            {
+                isLoading &&
+                <div className="w-full min-h-screen fixed flex justify-center items-center">
+                    <p className="text-white text-xl font-bold animate-pulse">Loading...</p>
+                </div>
+            }
             <section className="w-full md:w-4/5">
                 <header className="mb-16 text-white text-center">
                     <h1 className="text-2xl font-bold">GUBAT TRANSPORT COOPERATIVE</h1>
@@ -86,7 +92,7 @@ export default function SignIn() {
                                 </label>
                                 <input onChange={handleOnChange} type="password" name="password" id="password" className="w-full px-2 outline-none border-l border-black" />
                             </div>
-                            <button type="submit" className="p-2 w-full rounded bg-yellow-600 hover:bg-yellow-500 text-white font-bold">
+                            <button type="submit" disabled={buttonDisabled} className="p-2 w-full rounded bg-yellow-600 hover:bg-yellow-500 text-white font-bold">
                                 LOG IN
                             </button>
                             <p className="text-center text-white"><Link className="font-bold hover:text-blue-400" href={'/forgot-password'}>Forgot Password?</Link></p>

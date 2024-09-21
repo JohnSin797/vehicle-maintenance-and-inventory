@@ -1,5 +1,6 @@
 'use client'
 
+import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 export default function Create() {
@@ -20,7 +21,19 @@ export default function Create() {
  
     const handleReport = async (e: FormEvent) => {
         e.preventDefault();
-
+        await axios.post('/api/drivers', reportForm)
+        .then(() => {
+            setReportForm({
+                report_date: '',
+                bus_number: '',
+                driver: '',
+                conductor: '',
+                report: '',
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +55,7 @@ export default function Create() {
                 <header className="mb-5">
                     <h1 className="text-2xl font-bold">Create Report</h1>
                 </header>
-                <form>
+                <form onSubmit={handleReport}>
                     <div className="w-full space-y-2">
                         <div className="group w-full">
                             <label htmlFor="report_date" className="text-xs font-bold">Date:</label>
