@@ -11,6 +11,10 @@ const notificationSchema = new Schema(
             type: String,
             required: true,
         },
+        status: {
+            type: String,
+            default: 'unread',
+        }
     },
     {
         timestamps: true,

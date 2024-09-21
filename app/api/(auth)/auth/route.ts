@@ -1,5 +1,6 @@
 import connect from "@/lib/db";
 import User from "@/lib/modals/users";
+import Notification from "@/lib/modals/notifications";
 import * as argon2 from "argon2";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
@@ -39,12 +40,17 @@ export const POST = async (request: Request) => {
         }
         const signer = createSigner({ key: process.env.SECRET_KEY });
         const token = signer(tokenData);
-        // return new NextResponse(JSON.stringify({message: 'OK', user: user}), {status: 200});
         const response = NextResponse.json({
             message: 'OK',
             user: user
         });
         const now = new Date();
+        const notificationData = {
+            user: new ObjectId(user._id),
+            message: `You have logged in at ${now.toLocaleDateString('en-US')}.`,
+        }
+        const notification = new Notification(notificationData);
+        await notification.save();
         now.setMinutes(now.getMinutes() + 60);
         response.cookies.set('token', token, { httpOnly: true, expires: now });
         return response;

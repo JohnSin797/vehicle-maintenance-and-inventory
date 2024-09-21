@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
+import { useAuthStore } from "@/app/stores/auth";
 
 export default function SignIn() {
     const [signInForm, setSignInForm] = useState<{
@@ -20,6 +21,7 @@ export default function SignIn() {
     const [buttonDisabled, setButtonDisabled] = useState<Boolean>(false)
     const [isLoading, setIsLoading] = useState<Boolean>(false)
     const router = useRouter()
+    const store = useAuthStore()
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -28,7 +30,17 @@ export default function SignIn() {
         console.log(signInForm)
         await axios.post('/api/auth', signInForm)
         .then(response => {
-            console.log(response)
+            const user = response.data?.user
+            store.getUser({
+                id: user._id,
+                first_name: user.first_name,
+                middle_name: user.middle_name,
+                last_name: user.last_name,
+                extension: user.extension,
+                email: user.email,
+                role: user.role,
+                position: user.position,
+            })
             router.push('/')
         })
         .catch(error => {

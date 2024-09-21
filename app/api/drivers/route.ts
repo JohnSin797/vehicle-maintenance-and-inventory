@@ -20,6 +20,9 @@ export const GET = async (request: Request) => {
             return new NextResponse(JSON.stringify({message: 'Driver id is invalid'}), {status: 400});
         }
         const driver = await User.findById(new ObjectId(driverId));
+        if (driver?.position != 'driver') {
+            return new NextResponse(JSON.stringify({message: 'User is not a driver'}), {status: 400});
+        }
         const reports = await DriverReport.find({ driver: driver._id });
         return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
     } catch (error: unknown) {
