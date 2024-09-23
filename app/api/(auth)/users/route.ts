@@ -1,8 +1,10 @@
 import connect from "@/lib/db"
 import User from "@/lib/modals/users";
+import Notification from "@/lib/modals/notifications";
 import { NextResponse } from "next/server"
 import { Types } from "mongoose";
 import * as argon2 from "argon2";
+import { createSigner } from "fast-jwt";
 
 const ObjectId = Types.ObjectId;
 
@@ -31,7 +33,28 @@ export const POST = async (request: Request) => {
         });
         await newUser.save();
 
-        return new NextResponse(JSON.stringify({message: 'New user created', user: newUser.select('-password')}), {status: 200});
+        // return new NextResponse(JSON.stringify({message: 'New user created', user: newUser.select('-password')}), {status: 200});
+        const tokenData = {
+            id: newUser._id,
+            email: newUser.email,
+            position: newUser.position,
+        }
+        const signer = createSigner({ key: process.env.SECRET_KEY });
+        const token = signer(tokenData);
+        const response = NextResponse.json({
+            message: 'OK',
+            user: newUser
+        });
+        const now = new Date();
+        const notificationData = {
+            user: new ObjectId(newUser._id),
+            message: `You have successfully registered your account.`,
+        }
+        const notification = new Notification(notificationData);
+        await notification.save();
+        now.setMinutes(now.getMinutes() + 60);
+        response.cookies.set('token', token, { httpOnly: true, expires: now });
+        return response;
     } catch (error: unknown) {
         let message = '';
         if (error instanceof Error) {

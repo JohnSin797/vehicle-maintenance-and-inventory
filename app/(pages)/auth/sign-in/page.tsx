@@ -64,7 +64,7 @@ export default function SignIn() {
         <div className="w-full min-h-screen flex justify-center items-center">
             {
                 isLoading &&
-                <div className="w-full min-h-screen fixed flex justify-center items-center">
+                <div className="w-full min-h-screen fixed flex justify-center items-center bg-black/80">
                     <p className="text-white text-xl font-bold animate-pulse">Loading...</p>
                 </div>
             }
@@ -96,7 +96,7 @@ export default function SignIn() {
                                 LOG IN
                             </button>
                             <p className="text-center text-white"><Link className="font-bold hover:text-blue-400" href={'/forgot-password'}>Forgot Password?</Link></p>
-                            <p className="text-center text-xs text-white">No account yet? <Link href={'/sign-up'} className="font-bold hover:text-blue-400">sign up</Link></p>
+                            <p className="text-center text-xs text-white">No account yet? <Link href={'/auth/sign-up'} className="font-bold hover:text-blue-400">sign up</Link></p>
                         </div>
                     </form>
                 </div>

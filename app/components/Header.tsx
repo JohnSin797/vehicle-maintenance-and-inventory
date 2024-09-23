@@ -18,13 +18,20 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, searchFunction }) 
     const [searchKey, setSearchKey] = useState<string>('')
     
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchKey(e.target.value)
+        const key = e.target.value
+        setSearchKey(key)
+        handleSearch(key)
     }
 
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault()
+    const handleSearch = (e: FormEvent | string) => {
+        if (typeof e !== 'string') {
+            e.preventDefault(); 
+        }
+
+        const key = typeof e === 'string' ? e : searchKey; 
+
         if (searchFunction) {
-            searchFunction(searchKey)
+            searchFunction(key);
         }
     }
 
@@ -43,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, searchFunction }) 
                 </div>
                 {
                     goTo && 
-                    <Link href={goTo} className="p-2 rounded bg-blue-400 hover:bg-blue-600 text-white font-bold">submit</Link>
+                    <Link href={goTo} className="p-2 rounded bg-blue-400 hover:bg-blue-600 text-white font-bold">Create</Link>
                 }
                 {
                     searchFunction &&
@@ -56,6 +63,7 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, searchFunction }) 
                                 className="w-full bg-gray-100 placeholder:text-gray-600 p-2 outline-none" 
                                 onChange={handleOnChange}
                                 placeholder="Search..." 
+                                value={searchKey}
                             />
                             <button type="submit" className="bg-gray-100 flex justify-center items-center h-10 w-10">
                                 <FaMagnifyingGlass className="text-blue-400" size={23} />
