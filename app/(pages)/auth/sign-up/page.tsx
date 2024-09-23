@@ -5,7 +5,7 @@ import Link from "next/link";
 import person from '@/assets/images/person.jpg';
 import lock from '@/assets/images/lock.jpg';
 import logo from '@/assets/images/app-logo.jpg';
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useAuthStore } from "@/app/stores/auth";
 import axios from "axios";
 import { useRouter } from "next/navigation";
