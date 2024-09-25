@@ -52,6 +52,8 @@ export const POST = async (request: Request) => {
         const notification = new Notification(notificationData);
         await notification.save();
         now.setMinutes(now.getMinutes() + 60);
+        response.headers.set('Access-Control-Allow-Origin', '*');
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
         response.cookies.set('token', token, { httpOnly: true, expires: now });
         return response;
     } catch (error: unknown) {
