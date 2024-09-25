@@ -3,7 +3,7 @@ import User from "@/lib/modals/users";
 import Notification from "@/lib/modals/notifications";
 import { NextResponse } from "next/server"
 import { Types } from "mongoose";
-import * as argon2 from "argon2";
+import bcryptjs from "bcryptjs";
 import { createSigner } from "fast-jwt";
 
 const ObjectId = Types.ObjectId;
@@ -26,14 +26,13 @@ export const POST = async (request: Request) => {
     try {
         const body = await request.json();
         await connect();
-        const hashedPassword = await argon2.hash(body?.password);
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(body?.password, salt);
         const newUser = new User({
             ...body,
             password: hashedPassword
         });
         await newUser.save();
-
-        // return new NextResponse(JSON.stringify({message: 'New user created', user: newUser.select('-password')}), {status: 200});
         const tokenData = {
             id: newUser._id,
             email: newUser.email,

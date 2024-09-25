@@ -1,7 +1,7 @@
 import connect from "@/lib/db";
 import User from "@/lib/modals/users";
 import Notification from "@/lib/modals/notifications";
-import * as argon2 from "argon2";
+import bcryptjs from "bcryptjs";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 import { createSigner } from "fast-jwt";
@@ -30,7 +30,7 @@ export const POST = async (request: Request) => {
         if (!user) {
             return new NextResponse(JSON.stringify({message: 'Invalid email'}), {status: 401});
         }
-        if (!await argon2.verify(user?.password, password)) {
+        if (!await bcryptjs.compare(password, user.password)) {
             return new NextResponse(JSON.stringify({message: 'Wrong password'}), {status: 401});
         }
         const tokenData = {
@@ -72,7 +72,8 @@ export const PATCH = async (request: Request) => {
             return new NextResponse(JSON.stringify({message: 'Invalid user'}), {status: 400});
         }
         await connect();
-        const hashedPassword = await argon2.hash(password);
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(password, salt);
         const updateUser = await User.findOneAndUpdate(
             { _id: new ObjectId(id) },
             { password: hashedPassword },

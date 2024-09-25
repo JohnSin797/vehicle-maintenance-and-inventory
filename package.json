@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "argon2": "^0.41.1",
     "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
     "fast-jwt": "^4.0.5",
     "mongodb": "^6.9.0",
     "mongoose": "^8.6.3",
