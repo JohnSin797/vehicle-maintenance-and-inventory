@@ -95,7 +95,7 @@ export default function SignIn() {
                             <button type="submit" disabled={buttonDisabled} className="p-2 w-full rounded bg-yellow-600 hover:bg-yellow-500 text-white font-bold">
                                 LOG IN
                             </button>
-                            <p className="text-center text-white"><Link className="font-bold hover:text-blue-400" href={'/forgot-password'}>Forgot Password?</Link></p>
+                            <p className="text-center text-white"><Link className="font-bold hover:text-blue-400" href={'/auth/forgot-password'}>Forgot Password?</Link></p>
                             <p className="text-center text-xs text-white">No account yet? <Link href={'/auth/sign-up'} className="font-bold hover:text-blue-400">sign up</Link></p>
                         </div>
                     </form>

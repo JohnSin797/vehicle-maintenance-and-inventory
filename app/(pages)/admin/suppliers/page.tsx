@@ -5,8 +5,11 @@ import axios from "axios"
 import { useCallback, useEffect, useState } from "react"
 import { FaPencilAlt } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
+import { useAlert } from "@/app/contexts/AlertContext"
+import { useConfirmation } from "@/app/contexts/ConfirmationContext"
 
 interface Supplier {
+    _id: string;
     supplier_company: string;
     supplier_address: string;
     contact: string;
@@ -24,6 +27,8 @@ export default function Suppliers() {
         supplierArr: [],
         loading: true
     })
+    const { triggerAlert } = useAlert()
+    const { confirm } = useConfirmation()
 
     const searchSupplier = (key: string) => {
         const temp = suppliers.supplierArr.filter(data => 
@@ -33,6 +38,29 @@ export default function Suppliers() {
         setSuppliers({
             ...suppliers,
             suppliers: temp
+        })
+    }
+
+    const confirmDelete = (id: string) => {
+        confirm({
+            message: 'Are you sure you want to delete supplier?',
+            onConfirm: () => {
+                deleteSupplier(id)
+            },
+            onCancel: () => {
+
+            }
+        })
+    }
+
+    const deleteSupplier = async (id: string) => {
+        await axios.delete(`/api/suppliers?supplierId=${id}`)
+        .then(response => {
+            triggerAlert(response.data?.message, 'success')
+        })
+        .catch(error => {
+            console.log(error)
+            triggerAlert(error?.response?.data?.message, 'error')
         })
     }
 
@@ -82,7 +110,7 @@ export default function Suppliers() {
                                                     <FaPencilAlt />
                                                     EDIT
                                                 </button>
-                                                <button className="p-2 text-xs rounded bg-red-400 hover:bg-red-600 font-bold text-white flex items-center gap-2">
+                                                <button type="button" onClick={()=>confirmDelete(item._id)} className="p-2 text-xs rounded bg-red-400 hover:bg-red-600 font-bold text-white flex items-center gap-2">
                                                     <FaTrash />
                                                     DELETE
                                                 </button>
