@@ -2,7 +2,8 @@
 
 import { FaRegBell } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
-import personImg from "@/assets/images/person-icon.jpg";
+import { IoMdPerson } from "react-icons/io";
+// import personImg from "@/assets/images/person-icon.jpg";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -102,7 +103,7 @@ export default function Navigation() {
     }, [store.user])
 
     return (
-        <div className="w-full fixed flex justify-between items-center top-0 border-b border-cyan-400 text-white p-5 z-10 bg-img">
+        <div className="w-full fixed flex justify-between items-center top-0 border-b border-cyan-400 text-white p-2 z-10 bg-img">
             <p className="text-lg md:text-2xl font-bold">GUBAT TRANSPORT COOPERATIVE</p>
             <div className="flex justify-center items-center gap-5 md:gap-10">
                 <div className="relative">
@@ -110,11 +111,11 @@ export default function Navigation() {
                         <div className="rounded-full ring ring-cyan-400 p-2 relative">
                             {
                                 unreadCount > 0 &&
-                                <div className="rounded-full w-5 h-5 absolute block top-[-3px] right-[-3px] border border-cyan-400 flex justify-center items-center bg-blue-950">
-                                    <p className="text-xs text-cyan-400">{unreadCount}</p>
+                                <div className="rounded-full w-5 h-5 absolute block top-[-5px] right-[-5px] flex justify-center items-center bg-red-600">
+                                    <p className="text-xs text-white text-ellipsis overflow-hidden">{unreadCount}</p>
                                 </div>
                             }
-                            <FaRegBell className="text-cyan-400 w-5 h-5 md:w-10 md:h-10" />
+                            <FaRegBell className="text-cyan-400 w-5 h-5" />
                         </div>
                         <p className="text-center text-sm">Notifications</p>
                     </button>
@@ -142,8 +143,9 @@ export default function Navigation() {
                 </div>
                 <div className="relative">
                     <button onClick={()=>setProfileModal(!profileModal)} className="flex flex-col justify-center items-center">
-                        <div className="rounded-full overflow-hidden w-[40px] h-[40px] md:w-[58px] md:h-[58px] relative flex justify-center items-center">
-                            <Image src={personImg} alt="person" width={100} height={100} className="scale-150 absolute"/>
+                        <div className="rounded-full ring ring-cyan-400 p-2 relative">
+                            {/* <Image src={personImg} alt="person" width={100} height={100} className="scale-150 absolute"/> */}
+                            <IoMdPerson className="text-cyan-400 w-5 h-5" />
                         </div>
                         <p className="text-center text-sm">{ capitalize(store.user.position) }</p>
                     </button>
