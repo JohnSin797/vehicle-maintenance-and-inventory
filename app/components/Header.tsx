@@ -10,10 +10,11 @@ interface HeaderProps {
     title: string;
     backTo?: string | null;
     goTo?: string | null;
+    goTo2?: { path: string, title: string } | null;
     searchFunction?: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, searchFunction }) => {
+const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, goTo2, searchFunction }) => {
 
     const [searchKey, setSearchKey] = useState<string>('')
     
@@ -50,11 +51,15 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, searchFunction }) 
                 </div>
                 {
                     goTo && 
-                    <Link href={goTo} className="p-2 rounded bg-blue-400 hover:bg-blue-600 text-white font-bold">Create</Link>
+                    <Link href={goTo} className="p-2 rounded bg-blue-400 hover:bg-blue-600 text-white text-sm font-bold">Create</Link>
+                }
+                {
+                    goTo2 && 
+                    <Link href={goTo2.path} className="p-2 rounded bg-indigo-400 hover:bg-indigo-600 text-white text-sm font-bold">{goTo2.title}</Link>
                 }
                 {
                     searchFunction &&
-                    <form onSubmit={handleSearch} className="w-full md:w-1/2 group focus-within:ring ring-cyan-400">
+                    <form onSubmit={handleSearch} className="w-full md:w-1/3 group focus-within:ring ring-cyan-400">
                         <div className="w-full flex justify-center items-center">
                             <input 
                                 type="text" 

@@ -66,7 +66,7 @@ export default function Home() {
            <DashboardButton path="/admin/maintenance" title="Vehicle Maintenance">
             <Image src={vehicleImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
-           <DashboardButton path="/admin/inventory" title="Purchase Orders">
+           <DashboardButton path="/admin/purchase-order" title="Purchase Orders">
             <Image src={inventoryImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
            <DashboardButton path="/admin/inventory" title="Inventory">
