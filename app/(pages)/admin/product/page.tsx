@@ -4,7 +4,7 @@ import Header from "@/app/components/Header"
 import axios, { AxiosResponse } from "axios"
 import { useCallback, useEffect, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 import Swal from "sweetalert2"
 
 interface Product {
@@ -61,8 +61,7 @@ export default function Product() {
                 success: {
                     render({ data }: { data: AxiosResponse }) {
                         const prod = data.data?.product
-                        console.log(prod)
-                        // setProducts(prod)
+                        setProducts(prod ?? [])
                         return 'Product deleted'
                     }
                 },
@@ -74,7 +73,7 @@ export default function Product() {
     return(
         <div className="w-full">
             <ToastContainer position="bottom-right" />
-            <Header title="PRODUCTS" backTo={'/admin/purchase-order'} goTo={'/admin/product/create'} searchFunction={searchFunction} />
+            <Header title="PRODUCTS" backTo={'/admin/purchase-order'} goTo={'/admin/product/create'} goTo2={{path: '/admin/product/archive', title: 'Archive'}} searchFunction={searchFunction} />
             <section className="w-full bg-white min-h-80 2xl:min-h-96">
                 <table className="w-full table-auto md:table-fixed text-center">
                     <thead className="bg-gray-200">

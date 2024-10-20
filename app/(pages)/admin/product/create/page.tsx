@@ -4,7 +4,9 @@ import Header from "@/app/components/Header"
 import { ChangeEvent, FormEvent, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ToastContainer, toast } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Product {
     item_name: string;
@@ -56,21 +58,32 @@ export default function Create() {
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault()
-        await axios.post('/api/product', product)
-        .then(() => {
-            setProduct({
-                item_name: '',
-                brand: '',
-                description: ['']
-            })
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        toast.promise(
+            axios.post('/api/product', product),
+            {
+                pending: 'Creating product...',
+                success: {
+                    render() {
+                        setProduct({
+                            item_name: '',
+                            brand: '',
+                            description: ['']
+                        })
+                        return 'Product created'
+                    }
+                },
+                error: {
+                    render({ data }: { data: AxiosResponse }) {
+                        return data.data?.message
+                    }
+                }
+            }
+        )
     }
 
     return (
         <div className="w-full">
+            <ToastContainer position="bottom-right" />
             <Header title="CREATE PRODUCT" backTo={'/admin/product'} />
             <section className="w-full">
                 <form onSubmit={handleSubmit} className="w-full flex justify-center items-center">
