@@ -11,11 +11,13 @@ export const GET = async (request: Request) => {
         const {searchParams} = new URL(request.url);
         const driverId = searchParams.get('driverId');
 
+        await connect();
         if (!driverId) {
-            return new NextResponse(JSON.stringify({message: 'Driver not found'}), {status: 400});
+            // return new NextResponse(JSON.stringify({message: 'Driver not found'}), {status: 400});
+            const reports = await DriverReport.find({ deletedAt: null });
+            return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
         }
 
-        await connect();
         if (!Types.ObjectId.isValid(driverId)) {
             return new NextResponse(JSON.stringify({message: 'Driver id is invalid'}), {status: 400});
         }
@@ -23,7 +25,7 @@ export const GET = async (request: Request) => {
         if (driver?.position != 'driver') {
             return new NextResponse(JSON.stringify({message: 'User is not a driver'}), {status: 400});
         }
-        const reports = await DriverReport.find({ driver: driver._id });
+        const reports = await DriverReport.find({ driver: driver._id, deletedAt: null });
         return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
     } catch (error: unknown) {
         let message = '';

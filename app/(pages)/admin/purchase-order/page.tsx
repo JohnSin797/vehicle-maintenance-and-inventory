@@ -4,10 +4,8 @@ import Header from "@/app/components/Header"
 import axios from "axios"
 import { useCallback, useEffect, useState } from "react"
 
-interface Product {
+interface Inventory {
     item_name: string;
-    brand: string;
-    description: string[];
 }
 
 interface Supplier {
@@ -16,8 +14,10 @@ interface Supplier {
 
 interface PurchaseOrder {
     _id: string;
-    product: Product;
+    inventory: Inventory;
     supplier: Supplier;
+    brand: string;
+    description: string;
     date_ordered: Date;
     date_received: Date | null;
     unit_cost: number;
@@ -32,8 +32,8 @@ export default function PurchaseOrder() {
 
     const searchFunction = (key: string) => {
         const temp = orders.filter(data => 
-            data.product.item_name.toLowerCase().includes(key.toLowerCase()) ||
-            data.product.brand.toLowerCase().includes(key.toLowerCase()) ||
+            data.inventory.item_name.toLowerCase().includes(key.toLowerCase()) ||
+            data.brand.toLowerCase().includes(key.toLowerCase()) ||
             data.supplier.supplier_company.toLowerCase().includes(key.toLowerCase()) ||
             data?.status?.toLowerCase()?.includes(key.toLowerCase())
         )
@@ -59,7 +59,7 @@ export default function PurchaseOrder() {
 
     return (
         <div className="w-full">
-            <Header title="PURCHASE ORDERS" backTo={'/'} searchFunction={searchFunction} goTo={'/admin/purchase-order/create'} goTo2={{path: '/admin/product', title: 'Products'}} />
+            <Header title="PURCHASE ORDERS" backTo={'/'} searchFunction={searchFunction} goTo={'/admin/purchase-order/create'} goTo2={{path: '/admin/purchase-order/archive', title: 'Archive'}} />
             <section className="w-full bg-white min-h-80 2xl:min-h-96">
                 <table className="w-full table-auto md:table-fixed text-center text-xs">
                     <thead className="bg-gray-200">
@@ -73,7 +73,7 @@ export default function PurchaseOrder() {
                             <th className="border-x-2 border-black p-2">Purchase Quantity</th>
                             <th className="border-x-2 border-black p-2">Cost Per Item</th>
                             <th className="border-x-2 border-black p-2">Total Purchase Value</th>
-                            <th className="border-x-2 border-black p-2">Action</th>
+                            <th className="border-x-2 border-black p-2 md:w-1/6">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,20 +83,18 @@ export default function PurchaseOrder() {
                                     <tr key={index}>
                                         <td className="border-x-2 border-black p-2">{item.status}</td>
                                         <td className="border-x-2 border-black p-2">{new Date(item.date_ordered).toLocaleDateString('en-PH')}</td>
-                                        <td className="border-x-2 border-black p-2">{item.product?.item_name}</td>
-                                        <td className="border-x-2 border-black p-2">{item.product?.brand}</td>
-                                        <td className="border-x-2 border-black p-2">{item.product?.description.map((desc,idx) => {
-                                            return(
-                                                <p key={idx}>{desc}</p>
-                                            )
-                                        })}</td>
+                                        <td className="border-x-2 border-black p-2">{item.inventory?.item_name}</td>
+                                        <td className="border-x-2 border-black p-2">{item?.brand}</td>
+                                        <td className="border-x-2 border-black p-2">{item.description}</td>
                                         <td className="border-x-2 border-black p-2">{item.supplier?.supplier_company}</td>
                                         <td className="border-x-2 border-black p-2">{item.quantity}</td>
                                         <td className="border-x-2 border-black p-2">{item.unit_cost.toFixed(2)}</td>
                                         <td className="border-x-2 border-black p-2">{item.total_price.toFixed(2)}</td>
                                         <td className="border-x-2 border-black p-2">
                                             <div className="w-full flex flex-wrap justify-center items-center gap-2">
-
+                                                <button className="p-2 rounded text-xs text-white font-bold bg-indigo-400 hover:bg-indigo-600">Receive</button>
+                                                <button className="p-2 rounded text-xs text-white font-bold bg-rose-400 hover:bg-rose-600">Archive</button>
+                                                <button className="p-2 rounded text-xs text-white font-bold bg-cyan-400 hover:bg-cyan-600">Reorder</button>
                                             </div>
                                         </td>
                                     </tr>

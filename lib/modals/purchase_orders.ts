@@ -1,8 +1,10 @@
 import { Schema, model, models } from "mongoose";
 
 interface IPurchaseOrder extends Document {
-    product: Schema.Types.ObjectId;
+    inventory: Schema.Types.ObjectId;
     supplier: Schema.Types.ObjectId;
+    brand: string;
+    description: string;
     date_ordered: Date;
     date_received: Date;
     unit_cost: number;
@@ -16,9 +18,9 @@ interface IPurchaseOrder extends Document {
 
 const purchaseOrderSchema = new Schema<IPurchaseOrder>(
     {
-        product: {
+        inventory: {
             type: Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: 'Inventory',
             required: true,
         },
         supplier: {
@@ -26,6 +28,11 @@ const purchaseOrderSchema = new Schema<IPurchaseOrder>(
             ref: 'Supplier',
             required: true,
         },
+        brand: {
+            type: String,
+            required: true,
+        },
+        description: String,
         date_ordered: {
             type: Date,
             default: new Date(),

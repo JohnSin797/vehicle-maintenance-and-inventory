@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export const GET = async () => {
     try {
         await connect();
-        const orders = await PurchaseOrder.find({ deletedAt: null }).populate('product').populate('supplier');
+        const orders = await PurchaseOrder.find({ deletedAt: null }).populate('inventory').populate('supplier');
         return new NextResponse(JSON.stringify({message: 'OK', orders: orders}), {status: 200});
     } catch (error: unknown) {
         let message = '';

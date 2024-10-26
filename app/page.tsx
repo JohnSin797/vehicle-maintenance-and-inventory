@@ -11,6 +11,7 @@ import inventoryImg from "@/assets/images/inventory-icon.jpg";
 import Header from "./components/Header";
 import purchaseImg from "@/assets/images/purchase-icon.jpg";
 import supplierImg from "@/assets/images/supplier-icon.jpg";
+import mechanicImg from "@/assets/images/mechanic-icon.jpg";
 
 export default function Home() {
   const [userData, setUserData] = useState<{
@@ -59,21 +60,32 @@ export default function Home() {
         </div>
         <section className={`w-96 p-10 flex flex-wrap gap-2 ${userData.position == 'driver' ? '' : 'hidden'}`}>
            <DashboardButton path="/driver/report" title="Report Bus Issues">
-            <Image src={driverImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
+            <Image src={driverImg} alt="report" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
+        </section>
+        <section className={`w-96 p-10 flex flex-wrap gap-2 ${userData.position == 'mechanic' ? '' : 'hidden'}`}>
+          <DashboardButton path="/mechanic/reports" title="Driver Reports">
+            <Image src={driverImg} alt="report" width={100} height={100} className="scale-100 absolute" />
+          </DashboardButton>
+          <DashboardButton path="/mechanic/maintenance" title="Maintenance Reports">
+            <Image src={mechanicImg} alt="report" width={100} height={100} className="scale-100 absolute" />
+          </DashboardButton>
+          <DashboardButton path="/mechanic/inventory" title="Inventory Reports">
+            <Image src={purchaseImg} alt="inventory" width={100} height={100} className="scale-100 absolute" />
+          </DashboardButton>
         </section>
         <section className={`w-96 md:w-[400px] p-10 flex flex-wrap justify-center items-center gap-10 md:mt-12 ${userData.position == 'admin' ? '' : 'hidden'}`}>
            <DashboardButton path="/admin/maintenance" title="Vehicle Maintenance">
             <Image src={vehicleImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
            <DashboardButton path="/admin/purchase-order" title="Purchase Orders">
-            <Image src={inventoryImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
+            <Image src={inventoryImg} alt="order" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
            <DashboardButton path="/admin/inventory" title="Inventory">
-            <Image src={purchaseImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
+            <Image src={purchaseImg} alt="inventory" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
            <DashboardButton path="/admin/suppliers" title="Suppliers">
-            <Image src={supplierImg} alt="bus" width={100} height={100} className="scale-100 absolute" />
+            <Image src={supplierImg} alt="supplier" width={100} height={100} className="scale-100 absolute" />
            </DashboardButton>
         </section>
       </main>

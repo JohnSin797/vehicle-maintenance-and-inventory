@@ -10,8 +10,6 @@ import Swal from "sweetalert2";
 interface ProductOptions {
     _id: string;
     item_name: string;
-    brand: string;
-    description: string[];
 }
 
 interface SupplierOptions {
@@ -21,8 +19,10 @@ interface SupplierOptions {
 }
 
 interface PurchaseOrder {
-    product: string;
+    inventory: string;
     supplier: string;
+    brand: string;
+    description: string;
     date_ordered: Date | null;
     date_received: Date | null;
     unit_cost: number;
@@ -35,8 +35,10 @@ export default function Create() {
     const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([])
     const [totalPrice, setTotalPrice] = useState<number>(0)
     const [order, setOrder] = useState<PurchaseOrder>({
-        product: '',
+        inventory: '',
         supplier: '',
+        brand: '',
+        description: '',
         date_ordered: null,
         date_received: null,
         unit_cost: 0,
@@ -47,9 +49,9 @@ export default function Create() {
     const getOptions = useCallback(async () => {
         await axios.get('/api/product')
         .then(response => {
-            const products = response.data?.products
+            const inventory = response.data?.inventory
             const suppliers = response.data?.suppliers
-            setItemOptions(products ?? [])
+            setItemOptions(inventory ?? [])
             setSupplierOptions(suppliers ?? [])
         })
         .catch(error => {
@@ -104,8 +106,10 @@ export default function Create() {
                 success: {
                     render() {
                         setOrder({
-                            product: '',
+                            inventory: '',
                             supplier: '',
+                            brand: '',
+                            description: '',
                             date_ordered: null,
                             date_received: null,
                             unit_cost: 0,
@@ -117,6 +121,7 @@ export default function Create() {
                 },
                 error: {
                     render({ data }: { data: AxiosResponse }) {
+                        console.log(data)
                         Swal.fire({
                             title: 'Purchase Order Error',
                             text: data.data?.message,
@@ -133,16 +138,16 @@ export default function Create() {
         <div className="w-full">
             <ToastContainer position="bottom-right" />
             <Header title="PURCHASE ORDER" backTo={'/admin/purchase-order'} />
-            <section className="w-full flex justify-center items-center">
+            <section className="w-full flex justify-center items-center h-96 overflow-y-auto pt-80">
                 <form onSubmit={handleSubmit}>
                     <div className="w-full md:w-96 space-y-2 pb-10">
                         <div className="w-full">
-                            <label htmlFor="product" className="text-xs text-amber-400 font-bold">Product:</label>
+                            <label htmlFor="inventory" className="text-xs text-amber-400 font-bold">Item:</label>
                             <select 
-                                name="product" 
-                                id="product"
+                                name="inventory" 
+                                id="inventory"
                                 className="p-3 w-full rounded text-xs"
-                                value={order.product}
+                                value={order.inventory}
                                 onChange={handleOnChange}
                                 required
                             >
@@ -150,7 +155,7 @@ export default function Create() {
                                 {
                                     itemOptions.map((item, index) => {
                                         return (
-                                            <option value={item._id} key={index}>{item.item_name} | {item.brand}</option>
+                                            <option value={item._id} key={index}>{item.item_name}</option>
                                         )
                                     })
                                 }
@@ -175,6 +180,29 @@ export default function Create() {
                                     })
                                 }
                             </select>
+                        </div>
+                        <div className="w-full">
+                            <label htmlFor="brand" className="text-xs text-amber-400 font-bold">Brand:</label>
+                            <input 
+                                type="text" 
+                                name="brand" 
+                                id="brand" 
+                                className="w-full p-2 rounded text-sm" 
+                                value={ order.brand }
+                                onChange={handleOnChange}
+                                required
+                            />
+                        </div>
+                        <div className="w-full">
+                            <label htmlFor="description" className="text-xs text-amber-400 font-bold">Description:</label>
+                            <input 
+                                type="text" 
+                                name="description" 
+                                id="description" 
+                                className="w-full p-2 rounded text-sm" 
+                                value={ order.description }
+                                onChange={handleOnChange}
+                            />
                         </div>
                         <div className="w-full">
                             <label htmlFor="date_ordered" className="text-xs text-amber-400 font-bold">Date of Purchase:</label>

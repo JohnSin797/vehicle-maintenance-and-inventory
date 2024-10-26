@@ -1,6 +1,7 @@
 import connect from "@/lib/db";
 import Product from "@/lib/modals/products";
 import Supplier from "@/lib/modals/suppliers";
+import Inventory from "@/lib/modals/inventory";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -9,7 +10,8 @@ export const GET = async () => {
         await connect();
         const products = await Product.find({ deletedAt: null });
         const suppliers = await Supplier.find({ deletedAt: null });
-        return new NextResponse(JSON.stringify({message: 'OK', products: products, suppliers: suppliers}), {status: 200});
+        const inventory = await Inventory.find({ deletedAt: null });
+        return new NextResponse(JSON.stringify({message: 'OK', products: products, suppliers: suppliers, inventory: inventory}), {status: 200});
     } catch (error: unknown) {
         let message = '';
         if (error instanceof Error) {

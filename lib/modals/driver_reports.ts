@@ -22,7 +22,8 @@ const driverReportSchema = new Schema(
         report: {
             type: String,
             required: true,
-        }
+        },
+        deletedAt: Date,
     },
     {
         timestamps: true
