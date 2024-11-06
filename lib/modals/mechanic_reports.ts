@@ -5,7 +5,7 @@ interface IMechanicReport extends Document {
     bus_number: string;
     driver: string;
     conductor: string;
-    report: string;
+    report: Schema.Types.ObjectId[];
     report_date: Date;
     deletedAt?: Date;
     createdAt: Date;
@@ -32,7 +32,8 @@ const mechanicReportSchema = new Schema<IMechanicReport>(
             required: true,
         },
         report: {
-            type: String,
+            type: [Schema.Types.ObjectId],
+            ref: 'Inventory',
             required: true,
         },
         report_date: Date,

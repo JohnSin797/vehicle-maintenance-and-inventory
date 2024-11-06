@@ -13,8 +13,7 @@ export const GET = async (request: Request) => {
 
         await connect();
         if (!driverId) {
-            // return new NextResponse(JSON.stringify({message: 'Driver not found'}), {status: 400});
-            const reports = await DriverReport.find({ deletedAt: null });
+            const reports = await DriverReport.find({ deletedAt: null }).populate('report');
             return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
         }
 
@@ -25,7 +24,7 @@ export const GET = async (request: Request) => {
         if (driver?.position != 'driver') {
             return new NextResponse(JSON.stringify({message: 'User is not a driver'}), {status: 400});
         }
-        const reports = await DriverReport.find({ driver: driver._id, deletedAt: null });
+        const reports = await DriverReport.find({ driver: driver._id, deletedAt: null }).populate('report');
         return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
     } catch (error: unknown) {
         let message = '';
@@ -58,6 +57,39 @@ export const POST = async (request: Request) => {
             return new NextResponse(JSON.stringify({message: 'Failed to create report'}), {status: 400});
         }
         return new NextResponse(JSON.stringify({message: 'Driver Report successfully created'}), {status: 200});
+    } catch (error: unknown) {
+        let message = '';
+        if (error instanceof Error) {
+            message = error.message;
+        }
+        return new NextResponse('Error: ' + message, {status: 500});
+    }
+}
+
+export const PATCH = async (request: Request) => {
+    try {
+        const { searchParams } = new URL(request.url);
+        const reportId = searchParams.get('report_id');
+        if (!reportId) {
+            return new NextResponse(JSON.stringify({message: 'Missing report id'}), {status: 400});
+        }
+
+        if (!Types.ObjectId.isValid(reportId)) {
+            return new NextResponse(JSON.stringify({message: 'Invalid report id'}), {status: 400});
+        }
+
+        await connect();
+        const result = await DriverReport.findOneAndUpdate(
+            { _id: reportId },
+            { deletedAt: new Date() },
+            { new: true }
+        );
+
+        if (!result) {
+            return new NextResponse(JSON.stringify({message: 'Failed to archive report'}), {status: 400});
+        }
+        const reports = await DriverReport.find({ deletedAt: null }).populate('report');
+        return new NextResponse(JSON.stringify({message: 'OK', reports: reports}), {status: 200});
     } catch (error: unknown) {
         let message = '';
         if (error instanceof Error) {

@@ -1,29 +1,41 @@
 'use client'
 
 import axios, { AxiosResponse } from "axios";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react"
 import { useAuthStore } from "@/app/stores/auth";
 import Header from "@/app/components/Header";
 import { ToastContainer, toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
+import Select, { MultiValue } from "react-select";
 
 interface FormState {
     report_date: string,
     bus_number: string,
     driver: string,
     conductor: string,
-    report: string,
+    report: string[],
+}
+
+interface Inventory {
+    _id: string;
+    item_name: string;
+}
+
+interface ItemOptions {
+    value: string;
+    label: string;
 }
 
 export default function Create() {
-
+    const [isMounted, setIsMounted] = useState<boolean>(false)
+    const [itemOptions, setItemOptions] = useState<ItemOptions[]>([])
     const [reportForm, setReportForm] = useState<FormState>({
         report_date: '',
         bus_number: '',
         driver: '',
         conductor: '',
-        report: '',
+        report: [],
     })
     const store = useAuthStore()
  
@@ -44,7 +56,7 @@ export default function Create() {
                             bus_number: '',
                             driver: store.user.id,
                             conductor: '',
-                            report: '',
+                            report: [],
                         })
                         return 'Report created'
                     }
@@ -70,12 +82,46 @@ export default function Create() {
             ...prevForm,
             [name]: value
         }))
-        console.log(value)
     }
 
-    useEffect(()=>{
+    const handleSelectChange = (selectedOption: MultiValue<ItemOptions>) => {
+        const temp = selectedOption.map((item) => item.value)
+        setReportForm({
+            ...reportForm,
+            report: temp
+        })
+    }
 
-    })
+    const setOptions = (items: Inventory[]) => {
+        const newArr = items.map((inv)=>{
+            return {
+                value: inv._id,
+                label: inv.item_name,
+            }
+        })
+        setItemOptions(newArr)
+    }
+
+    const getInventory = useCallback(async () => {
+        await axios.get('/api/inventory')
+        .then(response => {
+            const inv = response.data?.inventory
+            setOptions(inv)
+            // setInventory(inv)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }, [])
+
+    useEffect(()=>{
+        setIsMounted(true)
+        getInventory()
+    }, [getInventory])
+    
+    if (!isMounted) {
+        return null
+    }
 
     return (
         <div className="w-full">
@@ -120,13 +166,18 @@ export default function Create() {
                             </div>
                             <div className="group w-full">
                                 <label htmlFor="report" className="text-xs text-amber-400 font-bold">Report:</label>
-                                <textarea 
+                                {/* <textarea 
                                     name="report" 
                                     id="report" 
                                     className="p-2 rounded border border-black resize-none w-full"
                                     value={reportForm.report}
                                     onChange={handleOnChange}
-                                ></textarea>
+                                ></textarea> */}
+                                <Select 
+                                    isMulti
+                                    options={itemOptions}
+                                    onChange={handleSelectChange}
+                                />
                             </div>
                             <button type="submit" className="w-full p-2 rounded bg-amber-400 hover:bg-amber-600 text-white font-bold">Create</button>
                         </div>

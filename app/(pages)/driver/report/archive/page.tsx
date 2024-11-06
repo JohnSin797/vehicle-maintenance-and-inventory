@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { useAuthStore } from "@/app/stores/auth";
-import axios, { AxiosResponse } from "axios";
 import Header from "@/app/components/Header";
-import Swal from "sweetalert2";
+import axios, { AxiosResponse } from "axios";
+import { useCallback, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from "sweetalert2";
 
 interface User {
     _id: string;
@@ -26,59 +25,35 @@ interface Report {
     report: [{item_name: ''}];
 }
 
-interface ReportState {
-    reports: Report[];
-    loading: boolean;
-}
-
-export default function Report() {
-    const store = useAuthStore()
-    const [reports, setReports] = useState<ReportState>({
-        reports: [],
-        loading: true
-    })
+export default function Archive() {
+    const [reports, setReports] = useState<Report[]>([])
     const [reportArr, setReportArr] = useState<Report[]>([])
+
+    const getReportArchives = useCallback(async () => {
+        await axios.get('/api/drivers/archive')
+        .then(response => {
+            const rep = response.data?.reports
+            setReports(rep)
+            setReportArr(rep)
+        })
+    }, [])
+
+    useEffect(() => {
+        getReportArchives()
+    }, [getReportArchives])
 
     const handleSearch = (key: string) => {
         const temp = reportArr.filter(data => 
             data.bus_number.toLowerCase().includes(key.toLowerCase()) ||
-            data.conductor.toLowerCase().includes(key.toLowerCase())
+            data.conductor.toLowerCase().includes(key.toLowerCase()) 
         )
-        setReports({
-            ...reports,
-            reports: temp
-        })
-    }
-
-    const getReports = async (id: string) => {
-        await axios.get(`/api/drivers?driverId=${id}`)
-        .then(response => {
-            console.log(response)
-            const rep = response.data?.reports
-            setReportArr(rep)
-            setReports({
-                reports: rep,
-                loading: false
-            })
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    }
-
-    useEffect(()=>{
-        getUser()
-    }, [store.user])
-
-    const getUser = () => {
-        const user = store.user
-        getReports(user.id)
+        setReports(temp)
     }
 
     const confirmDelete = (id: string) => {
         Swal.fire({
-            title: 'Archive Confirmation',
-            text: 'Are you sure you want to archive report?',
+            title: 'Delete Confirmation',
+            text: 'Are you sure you want to permanently delete report?',
             icon: 'question',
             showCancelButton: true,
             showConfirmButton: true,
@@ -93,31 +68,22 @@ export default function Report() {
     }
 
     const deleteReport = async (id: string) => {
-        setReports({
-            ...reports,
-            loading: true,
-        })
         toast.promise(
-            axios.patch(`/api/drivers?report_id=${id}`),
+            axios.delete(`/api/drivers/archive?report_id=${id}`),
             {
-                pending: 'Archiving report...',
+                pending: 'Deleting report...',
                 success: {
                     render({ data }: { data: AxiosResponse }) {
-                        console.log(data)
                         const rep = data?.data?.reports
+                        setReports(rep)
                         setReportArr(rep)
-                        setReports({
-                            reports: rep,
-                            loading: false
-                        })
-                        return 'Report archived'
+                        return 'Report deleted'
                     }
                 },
                 error: {
                     render({ data }: { data: AxiosResponse }) {
-                        console.log(data)
                         Swal.fire({
-                            title: 'Archive Error',
+                            title: 'Report Delete Error',
                             text: data?.data?.message,
                             icon: 'error'
                         })
@@ -128,16 +94,54 @@ export default function Report() {
         )
     }
 
-    return(
+    const confirmRestore = (id: string) => {
+        Swal.fire({
+            title: 'Restore Confirmation',
+            text: 'Are you sure you want to restore report?',
+            icon: 'question',
+            showCancelButton: true,
+            showConfirmButton: true,
+            cancelButtonColor: 'red',
+            confirmButtonColor: 'indigo',
+        })
+        .then(response => {
+            if (response.isConfirmed) {
+                restoreReport(id)
+            }
+        })
+    }
+
+    const restoreReport = async (id: string) => {
+        toast.promise(
+            axios.patch(`/api/drivers/archive?report_id=${id}`),
+            {
+                pending: 'Restoring report...',
+                success: {
+                    render({ data }: { data: AxiosResponse }) {
+                        const rep = data?.data?.reports
+                        setReports(rep)
+                        setReportArr(rep)
+                        return 'Report restored'
+                    }
+                },
+                error: {
+                    render({ data }: { data: AxiosResponse }) {
+                        Swal.fire({
+                            title: 'Report Restore Error',
+                            text: data?.data?.message,
+                            icon: 'error'
+                        })
+                        return 'ERROR'
+                    }
+                }
+            }
+        )
+    }
+
+    return (
         <div className="w-full">
             <ToastContainer position="bottom-right" />
-            <Header 
-                title="DRIVERS REPORTS" 
-                backTo="/" 
-                goTo={'/driver/report/create'} 
-                goTo2={{ path: '/driver/report/archive', title: 'Archive' }} 
-                searchFunction={handleSearch} 
-            />
+            <Header title="DRIVER REPORT ARCHIVE" backTo={'/driver/report'} searchFunction={handleSearch} />
             <section className="w-full bg-white min-h-80">
                 <table className="w-full table-auto md:table-fixed text-center text-sm">
                     <thead className="bg-gray-200">
@@ -152,7 +156,7 @@ export default function Report() {
                     </thead>
                     <tbody>
                         {
-                            reports.reports.map((item,index)=>{
+                            reports.map((item,index)=>{
                                 return(
                                     <tr key={index}>
                                         <td className="p-2 border-x-2 border-black">{new Date(item.report_date).toLocaleDateString('en-US')}</td>
@@ -177,7 +181,13 @@ export default function Report() {
                                                     onClick={()=>confirmDelete(item._id)}
                                                     className="p-2 rounded text-white font-bold bg-rose-400 hover:bg-rose-600"
                                                 >
-                                                    Archive
+                                                    Delete
+                                                </button>
+                                                <button
+                                                    onClick={()=>confirmRestore(item._id)}
+                                                    className="p-2 rounded text-white font-bold bg-green-400 hover:bg-green-600"
+                                                >
+                                                    Restore
                                                 </button>
                                             </div>
                                         </td>

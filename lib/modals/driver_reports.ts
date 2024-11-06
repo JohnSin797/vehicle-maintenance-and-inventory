@@ -5,7 +5,7 @@ interface IDriverReport extends Document {
     bus_number: string;
     driver: Schema.Types.ObjectId;
     conductor: string;
-    report: string;
+    report: Schema.Types.ObjectId[];
     deletedAt: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -31,7 +31,8 @@ const driverReportSchema = new Schema<IDriverReport>(
             required: true,
         },
         report: {
-            type: String,
+            type: [Schema.Types.ObjectId],
+            ref: 'Inventory',
             required: true,
         },
         deletedAt: Date,
