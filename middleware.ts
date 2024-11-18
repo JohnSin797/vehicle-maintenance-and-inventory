@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
+// import { decodeCookie } from './lib/utils/TokenDecoder'
+// import jwt from 'jsonwebtoken'
+
+// interface JwtPayload {
+//   id: string;
+//   email: string;
+//   position: string;
+// }
  
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
@@ -21,6 +29,8 @@ export const config = {
   matcher: [
     '/',
     '/driver/:path*',
-    '/auth/:path*'
+    '/admin/:path*',
+    '/mechanic/:path*',
+    '/auth/:path*',
   ],
 }

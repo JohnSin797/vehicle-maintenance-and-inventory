@@ -84,3 +84,35 @@ body {
 .confirmation-actions button:last-child:hover {
   background-color: rgb(220 38 38);
 }
+
+.bg-0 {
+  background-color: rgb(129 140 248);
+}
+
+.bg-1 {
+ background-color: rgb(56 189 248);
+}
+
+.bg-2 {
+  background-color: rgb(45 212 191);
+}
+
+.bg-3 {
+  background-color: rgb(52 211 153);
+}
+
+.bg-0:hover {
+  background-color: rgb(79 70 229);
+}
+
+.bg-1:hover {
+  background-color: rgb(2 132 199);
+}
+
+.bg-2:hover {
+  background-color: rgb(13 148 136);
+}
+
+.bg-3:hover {
+  background-color: rgb(5 150 105);
+}

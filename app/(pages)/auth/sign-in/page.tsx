@@ -27,7 +27,6 @@ export default function SignIn() {
         e.preventDefault();
         setButtonDisabled(true)
         setIsLoading(true)
-        console.log(signInForm)
         await axios.post('/api/auth', signInForm)
         .then(response => {
             const user = response.data?.user
@@ -41,7 +40,18 @@ export default function SignIn() {
                 role: user.role,
                 position: user.position,
             })
-            router.push('/')
+            if (user.position == 'driver') {
+                router.push('/driver/report')
+            }
+            else if (user.position == 'mechanic') {
+                router.push('/mechanic/maintenance')
+            }
+            else if (user.position == 'admin') {
+                router.push('/admin')
+            }
+            else {
+                router.push('/')
+            }
         })
         .catch(error => {
             console.log(error)

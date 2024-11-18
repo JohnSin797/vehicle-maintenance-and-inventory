@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 import { Types } from "mongoose";
 import bcryptjs from "bcryptjs";
 import { createSigner } from "fast-jwt";
+// import jwt from 'jsonwebtoken';
 
 const ObjectId = Types.ObjectId;
 
@@ -40,6 +41,7 @@ export const POST = async (request: Request) => {
         }
         const signer = createSigner({ key: process.env.SECRET_KEY });
         const token = signer(tokenData);
+        // const token = jwt.sign(tokenData, 'secret', {expiresIn: '5h'});
         const response = NextResponse.json({
             message: 'OK',
             user: newUser

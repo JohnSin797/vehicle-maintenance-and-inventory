@@ -5,6 +5,7 @@ import bcryptjs from "bcryptjs";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 import { createSigner } from "fast-jwt";
+// import jwt from 'jsonwebtoken';
 
 const ObjectId = Types.ObjectId;
 
@@ -40,6 +41,7 @@ export const POST = async (request: Request) => {
         }
         const signer = createSigner({ key: process.env.SECRET_KEY });
         const token = signer(tokenData);
+        // const token = jwt.sign(tokenData, 'secret', {expiresIn: '5h'});
         const response = NextResponse.json({
             message: 'OK',
             user: user
@@ -49,8 +51,8 @@ export const POST = async (request: Request) => {
             user: new ObjectId(user._id),
             message: `You have logged in at ${now.toLocaleDateString('en-US')}.`,
         }
-        const notification = new Notification(notificationData);
-        await notification.save();
+        // const notification = new Notification(notificationData);
+        // await notification.save();
         now.setMinutes(now.getMinutes() + 60);
         response.headers.set('Access-Control-Allow-Origin', '*');
         response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');

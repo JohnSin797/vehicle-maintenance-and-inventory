@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import purchaseImg from "@/assets/images/purchase-icon.jpg";
 import supplierImg from "@/assets/images/supplier-icon.jpg";
 import mechanicImg from "@/assets/images/mechanic-icon.jpg";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [userData, setUserData] = useState<{
@@ -32,9 +33,20 @@ export default function Home() {
     position: ''
   })
   const store = useAuthStore()
+  const router = useRouter()
 
   const setUser = () => {
     const user = store.user
+    if (user.position == 'driver') {
+      router.push('/driver/report')
+    }
+    else if (user.position == 'mechanic') {
+      router.push('/mechanic/reports')
+    }
+    else if (user.position == 'admin') {
+      router.push('/admin')
+    }
+    else
     setUserData({
       first_name: user?.first_name,
       middle_name: user?.middle_name,
