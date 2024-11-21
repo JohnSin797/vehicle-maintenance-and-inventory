@@ -46,6 +46,9 @@ export default function Home() {
     else if (user.position == 'admin') {
       router.push('/admin')
     }
+    else if (user.position == 'inventory') {
+      router.push('/inventory')
+    }
     else
     setUserData({
       first_name: user?.first_name,

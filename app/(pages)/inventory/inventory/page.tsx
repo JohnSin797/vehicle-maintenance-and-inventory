@@ -32,17 +32,17 @@ export default function Inventory() {
     }, [getInventory])
     return (
         <div className="w-full">
-            <Header title="INVENTORY" backTo={'/admin'} />
+            <Header title="INVENTORY" backTo={'/inventory'} />
             <section className="w-full md:px-10">
                 <div className="w-full flex flex-wrap justify-center gap-2 md:gap-4">
                     {
                         inventory.map((invntry, index) => {
                             return(
-                                <ItemCard title={invntry.item_name} path={`/admin/inventory/${invntry._id}`} key={index} />
+                                <ItemCard title={invntry.item_name} path={`/inventory/inventory/${invntry._id}`} key={index} />
                             )
                         })
                     }
-                    <DashboardButton path="/admin/inventory/create" title="Add Item">
+                    <DashboardButton path="/inventory/inventory/create" title="Add Item">
                         <Image src={addImg} alt="report" width={100} height={100} className="scale-100 absolute" />
                     </DashboardButton>
                 </div>

@@ -49,6 +49,8 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, goTo2, searchFunct
                     }
                     <h1 className="text-2xl text-white font-bold">{ title }</h1>
                 </div>
+                <div className="flex justify-center items-center gap-2">
+                    
                 {
                     goTo && 
                     <Link href={goTo} className="p-2 rounded bg-blue-400 hover:bg-blue-600 text-white text-sm font-bold">Create</Link>
@@ -57,6 +59,7 @@ const Header: React.FC<HeaderProps> = ({ title, backTo, goTo, goTo2, searchFunct
                     goTo2 && 
                     <Link href={goTo2.path} className="p-2 rounded bg-indigo-400 hover:bg-indigo-600 text-white text-sm font-bold">{goTo2.title}</Link>
                 }
+                </div>
                 {
                     searchFunction &&
                     <form onSubmit={handleSearch} className="w-full md:w-1/3 group focus-within:ring ring-cyan-400">

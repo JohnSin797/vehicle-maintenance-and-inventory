@@ -47,10 +47,10 @@ export const POST = async (request: Request) => {
             user: user
         });
         const now = new Date();
-        const notificationData = {
-            user: new ObjectId(user._id),
-            message: `You have logged in at ${now.toLocaleDateString('en-US')}.`,
-        }
+        // const notificationData = {
+        //     user: new ObjectId(user._id),
+        //     message: `You have logged in at ${now.toLocaleDateString('en-US')}.`,
+        // }
         // const notification = new Notification(notificationData);
         // await notification.save();
         now.setMinutes(now.getMinutes() + 60);

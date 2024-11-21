@@ -24,6 +24,7 @@ interface Report {
     driver: User;
     conductor: string;
     report: [{item_name: ''}];
+    createdAt: Date;
 }
 
 interface ReportState {
@@ -133,7 +134,6 @@ export default function Report() {
             <ToastContainer position="bottom-right" />
             <Header 
                 title="DRIVERS REPORTS" 
-                backTo="/" 
                 goTo={'/driver/report/create'} 
                 goTo2={{ path: '/driver/report/archive', title: 'Archive' }} 
                 searchFunction={handleSearch} 
@@ -155,13 +155,13 @@ export default function Report() {
                             reports.reports.map((item,index)=>{
                                 return(
                                     <tr key={index}>
-                                        <td className="p-2 border-x-2 border-black">{new Date(item.report_date).toLocaleDateString('en-US')}</td>
+                                        <td className="p-2 border-x-2 border-black">{new Date(item.createdAt).toLocaleDateString('en-PH')}</td>
                                         <td className="p-2 border-x-2 border-black">{item.bus_number}</td>
                                         <td className="p-2 border-x-2 border-black">
-                                            {item.driver.first_name} 
-                                            {item.driver.middle_name} 
-                                            {item.driver.last_name} 
-                                            {item.driver?.extension}
+                                            <span>{item.driver?.first_name} </span> 
+                                            <span>{item.driver?.middle_name} </span> 
+                                            <span>{item.driver?.last_name} </span>
+                                            <span>{item.driver?.extension}</span>
                                         </td>
                                         <td className="p-2 border-x-2 border-black">{item.conductor}</td>
                                         <td className="p-2 border-x-2 border-black">

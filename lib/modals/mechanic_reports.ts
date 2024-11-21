@@ -3,11 +3,12 @@ import { Schema, model, models } from "mongoose";
 interface IMechanicReport extends Document {
     mechanic: Schema.Types.ObjectId;
     bus_number: string;
-    driver: string;
+    driver: Schema.Types.ObjectId;
     conductor: string;
     report: Schema.Types.ObjectId[];
     report_date: Date;
-    deletedAt?: Date;
+    status: string;
+    deletedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -24,7 +25,8 @@ const mechanicReportSchema = new Schema<IMechanicReport>(
             required: true,
         },
         driver: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true,
         },
         conductor: {
@@ -35,6 +37,10 @@ const mechanicReportSchema = new Schema<IMechanicReport>(
             type: [Schema.Types.ObjectId],
             ref: 'Inventory',
             required: true,
+        },
+        status: {
+            type: String,
+            default: 'pending',
         },
         report_date: Date,
         deletedAt: Date,

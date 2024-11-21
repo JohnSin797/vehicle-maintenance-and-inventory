@@ -10,7 +10,6 @@ import Swal from "sweetalert2";
 import Select, { MultiValue } from "react-select";
 
 interface FormState {
-    report_date: string,
     bus_number: string,
     driver: string,
     conductor: string,
@@ -31,7 +30,6 @@ export default function Create() {
     const [isMounted, setIsMounted] = useState<boolean>(false)
     const [itemOptions, setItemOptions] = useState<ItemOptions[]>([])
     const [reportForm, setReportForm] = useState<FormState>({
-        report_date: '',
         bus_number: '',
         driver: '',
         conductor: '',
@@ -50,9 +48,9 @@ export default function Create() {
             {
                 pending: 'Creating report',
                 success: {
-                    render() {
+                    render({ data }: { data: AxiosResponse }) {
+                        console.log(data)
                         setReportForm({
-                            report_date: '',
                             bus_number: '',
                             driver: store.user.id,
                             conductor: '',
@@ -131,7 +129,7 @@ export default function Create() {
                 <section className="w-96">
                     <form onSubmit={handleReport}>
                         <div className="w-full space-y-2">
-                            <div className="group w-full">
+                            {/* <div className="group w-full">
                                 <label htmlFor="report_date" className="text-xs text-amber-400 font-bold">Date:</label>
                                 <input 
                                     onChange={handleOnChange} 
@@ -141,7 +139,7 @@ export default function Create() {
                                     className="p-2 rounded border border-black w-full" 
                                     value={reportForm.report_date ? new Date(reportForm.report_date).toISOString().substring(0, 16) : ''}
                                 />
-                            </div>
+                            </div> */}
                             <div className="group w-full">
                                 <label htmlFor="bus_number" className="text-xs text-amber-400 font-bold">Bus Number:</label>
                                 <input 

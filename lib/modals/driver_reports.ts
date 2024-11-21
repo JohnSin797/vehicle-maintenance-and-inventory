@@ -1,11 +1,11 @@
 import { Schema, model, models } from "mongoose";
 
 interface IDriverReport extends Document {
-    report_date: Date;
     bus_number: string;
     driver: Schema.Types.ObjectId;
     conductor: string;
     report: Schema.Types.ObjectId[];
+    status: string;
     deletedAt: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -13,10 +13,6 @@ interface IDriverReport extends Document {
 
 const driverReportSchema = new Schema<IDriverReport>(
     {
-        report_date: {
-            type: Date,
-            required: true,
-        },
         bus_number: {
             type: String,
             required: true,
@@ -34,6 +30,10 @@ const driverReportSchema = new Schema<IDriverReport>(
             type: [Schema.Types.ObjectId],
             ref: 'Inventory',
             required: true,
+        },
+        status: {
+            type: String,
+            default: 'pending',
         },
         deletedAt: Date,
     },

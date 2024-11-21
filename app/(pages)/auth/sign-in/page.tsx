@@ -9,17 +9,19 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "@/app/stores/auth";
+import SignUpModal from "@/app/components/SignUpModal";
 
 export default function SignIn() {
     const [signInForm, setSignInForm] = useState<{
-        email: string,
-        password: string,
+        sign_in_email: string,
+        sign_in_password: string,
     }>({
-        email: '',
-        password: '',
+        sign_in_email: '',
+        sign_in_password: '',
     })
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [showSignUp, setShowSignUp] = useState<boolean>(false)
     const router = useRouter()
     const store = useAuthStore()
 
@@ -27,7 +29,10 @@ export default function SignIn() {
         e.preventDefault();
         setButtonDisabled(true)
         setIsLoading(true)
-        await axios.post('/api/auth', signInForm)
+        await axios.post('/api/auth', {
+            email: signInForm.sign_in_email,
+            password: signInForm.sign_in_password
+        })
         .then(response => {
             const user = response.data?.user
             store.getUser({
@@ -39,15 +44,20 @@ export default function SignIn() {
                 email: user.email,
                 role: user.role,
                 position: user.position,
+                password_recovery_question: user?.password_recovery_question,
+                password_recovery_answer: user?.password_recovery_answer,
             })
             if (user.position == 'driver') {
                 router.push('/driver/report')
             }
             else if (user.position == 'mechanic') {
-                router.push('/mechanic/maintenance')
+                router.push('/mechanic/reports')
             }
             else if (user.position == 'admin') {
                 router.push('/admin')
+            }
+            else if (user.position == 'inventory') {
+                router.push('/inventory')
             }
             else {
                 router.push('/')
@@ -70,6 +80,10 @@ export default function SignIn() {
         }))
     }
 
+    const showModal = () => {
+        setShowSignUp(!showSignUp)
+    }
+
     return(
         <div className="w-full min-h-screen flex justify-center items-center">
             {
@@ -78,6 +92,7 @@ export default function SignIn() {
                     <p className="text-white text-xl font-bold animate-pulse">Loading...</p>
                 </div>
             }
+            <SignUpModal isHidden={showSignUp} setIsHidden={showModal} />
             <section className="w-full md:w-4/5">
                 <header className="mb-16 text-white text-center">
                     <h1 className="text-2xl font-bold">GUBAT TRANSPORT COOPERATIVE</h1>
@@ -94,19 +109,19 @@ export default function SignIn() {
                                 <label htmlFor="email" className="">
                                     <Image src={person} alt="person-icon" width={20} height={20} />
                                 </label>
-                                <input onChange={handleOnChange} type="email" name="email" id="email" className="w-full px-2 outline-none border-l border-black" />
+                                <input onChange={handleOnChange} type="email" name="sign_in_email" id="sign_in_email" className="w-full px-2 outline-none border-l border-black" />
                             </div>
                             <div className="group w-full flex justify-center items-center bg-white p-2 rounded ring-2 focus-within:ring ring-black gap-2">
                                 <label htmlFor="password" className="">
                                     <Image src={lock} alt="lock-icon" width={20} height={20} />
                                 </label>
-                                <input onChange={handleOnChange} type="password" name="password" id="password" className="w-full px-2 outline-none border-l border-black" />
+                                <input onChange={handleOnChange} type="password" name="sign_in_password" id="sign_in_password" className="w-full px-2 outline-none border-l border-black" />
                             </div>
                             <button type="submit" disabled={buttonDisabled} className="p-2 w-full rounded bg-yellow-600 hover:bg-yellow-500 text-white font-bold">
                                 LOG IN
                             </button>
                             <p className="text-center text-white"><Link className="font-bold hover:text-blue-400" href={'/auth/forgot-password'}>Forgot Password?</Link></p>
-                            <p className="text-center text-xs text-white">No account yet? <Link href={'/auth/sign-up'} className="font-bold hover:text-blue-400">sign up</Link></p>
+                            <p className="text-center text-xs text-white">No account yet? <button type="button" onClick={showModal} className="font-bold hover:text-blue-400">sign up</button></p>
                         </div>
                     </form>
                 </div>

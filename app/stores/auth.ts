@@ -9,7 +9,9 @@ interface userDataState {
     extension: string,
     email: string
     role: string,
-    position: string
+    position: string,
+    password_recovery_question: string,
+    password_recovery_answer: string,
 }
 
 interface AuthState {
@@ -30,7 +32,9 @@ export const useAuthStore = create<AuthState>()(
                     extension: '',
                     email: '',
                     role: '',
-                    position: ''
+                    position: '',
+                    password_recovery_question: '',
+                    password_recovery_answer: ''
                 },
                 getUser: (userData) => set(()=>({ user: userData })),
                 removeUser: () => set(()=>({ user: {
@@ -41,7 +45,9 @@ export const useAuthStore = create<AuthState>()(
                     extension: '',
                     email: '',
                     role: '',
-                    position: ''
+                    position: '',
+                    password_recovery_question: '',
+                    password_recovery_answer: '',
                 } }))
             }),
             {

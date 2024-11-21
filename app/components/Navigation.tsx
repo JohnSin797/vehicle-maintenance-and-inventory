@@ -53,7 +53,6 @@ export default function Navigation() {
             setNotifications(notification)
             const count = notification.filter((notif: Notification) => notif.status === 'unread').length
             setUnreadCount(count)
-            console.log(response)
         })
         .catch(error => {
             console.log(error)
@@ -62,10 +61,8 @@ export default function Navigation() {
 
     const readNotifications = async () => {
         const user = store.user
-        console.log(user.id)
         await axios.put('/api/notifications', {id: user.id})
         .then(response => {
-            console.log(response)
             const not = response.data?.notifications
             setNotifications(not)
             const count = not.filter((notification: Notification) => notification.status === 'unread').length
