@@ -14,7 +14,7 @@ export const GET = async (request: Request) => {
                 return new NextResponse(JSON.stringify({ message: 'Invalid inventory id' }), { status: 400 });
             }
             const inventory = await Inventory.findOne({ deletedAt: null, _id: inventoryId });
-            const po = await PurchaseOrder.find({ deletedAt: null, inventory: inventoryId }).populate('inventory');
+            const po = await PurchaseOrder.find({ deletedAt: null, inventory: inventoryId, date_received: { $ne: null } }).populate('inventory');
             return new NextResponse(JSON.stringify({message: 'OK', inventory: inventory, orders: po}), {status: 200});
         }
         const inventory = await Inventory.find({ deletedAt: null });
@@ -35,6 +35,9 @@ export const POST = async (request: Request) => {
             return new NextResponse(JSON.stringify({ message: 'Invalid item name' }), { status: 400 });
         }
         await connect();
+        if (await Inventory.findOne({ item_name: item_name })) {
+            return new NextResponse(JSON.stringify({message: 'Item already exists'}), {status: 400});
+        }
         const result = await Inventory.create({ item_name: item_name.trim().toUpperCase() });
         if (!result) {
             return new NextResponse(JSON.stringify({message: 'Failed to create inventory item'}), {status: 400});

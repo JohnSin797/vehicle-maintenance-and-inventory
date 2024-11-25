@@ -11,6 +11,7 @@ const inventorySchema = new Schema<IInventory>(
     {
         item_name: {
             type: String,
+            unique: true,
             required: true,
         },
         deletedAt: String,

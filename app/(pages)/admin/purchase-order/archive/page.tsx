@@ -30,27 +30,27 @@ interface PurchaseOrder {
     status: string;
 }
 
-export default function PurchaseOrder() {
-    const [orders, setOrders] = useState<PurchaseOrder[]>([])
-    const [orderArr, setOrderArr] = useState<PurchaseOrder[]>([])
+export default function Archive() {
+    const [archive, setArchive] = useState<PurchaseOrder[]>([])
+    const [archiveArr, setArchiveArr] = useState<PurchaseOrder[]>([])
     const store = useAuthStore()
 
-    const searchFunction = (key: string) => {
-        const temp = orders.filter(data => 
+    const handleSearch = (key: string) => {
+        const temp = archiveArr.filter(data => 
             data.inventory.item_name.toLowerCase().includes(key.toLowerCase()) ||
             data.brand.toLowerCase().includes(key.toLowerCase()) ||
             data.supplier.supplier_company.toLowerCase().includes(key.toLowerCase()) ||
             data?.status?.toLowerCase()?.includes(key.toLowerCase())
         )
-        setOrderArr(temp)
+        setArchive(temp)
     }
 
-    const getPO = useCallback(async () => {
-        await axios.get('/api/purchase-order')
+    const getArchive = useCallback(async () => {
+        await axios.get('/api/purchase-order/archive')
         .then(response => {
-            const po = response.data?.orders
-            setOrders(po)
-            setOrderArr(po)
+            const arc = response.data?.archive
+            setArchive(arc)
+            setArchiveArr(arc)
         })
         .catch(error => {
             console.log(error)
@@ -58,52 +58,41 @@ export default function PurchaseOrder() {
     }, [])
 
     useEffect(() => {
-        getPO()
-    }, [getPO])
+        getArchive()
+    }, [getArchive])
 
-    const confirmReceive = (item: PurchaseOrder) => {
+    const confirmRestore = (id: string) => {
         Swal.fire({
-            title: 'Receive Confirmation',
-            html: `
-                <div class="text-left">
-                    <p><strong>Item Name:</strong> ${item.inventory.item_name}</p>
-                    <p><strong>Brand:</strong> ${item.brand}</p>
-                    <p><strong>Supplier:</strong> ${item.supplier.supplier_company}</p>
-                    <p><strong>Quantity:</strong> ${item.quantity}</p>
-                    <p><strong><u>Unit Cost:</strong> $${item.unit_cost.toFixed(2)}</u></p>
-                    <p><strong>Total Price:</strong> $${item.total_price.toFixed(2)}</p>
-                    <br>
-                    <p style="text-align: center;">Are you sure you want to continue?</p>
-                </div>
-            `,
+            title: 'Restore Confirmation',
+            text: 'Are you sure you want to restore?',
             icon: 'question',
             showCancelButton: true,
             showConfirmButton: true,
         })
         .then(response => {
             if (response.isConfirmed) {
-                receiveItem(item._id)
+                restorePO(id)
             }
         })
     }
 
-    const receiveItem = async (id: string) => {
+    const restorePO = async (id: string) => {
         const uid = store.user.id
         toast.promise(
-            axios.put(`/api/purchase-order?order_id=${id}`, { user_id: uid }),
+            axios.patch(`/api/purchase-order/archive?order_id=${id}`, { user_id: uid }),
             {
-                pending: 'Receiving...',
+                pending: 'Restoring...',
                 success: {
                     render({ data }: { data: AxiosResponse }) {
-                        const po = data.data?.orders
-                        setOrders(po)
-                        setOrderArr(po)
-                        return 'Received'
+                        const arc = data.data?.archive
+                        setArchive(arc)
+                        setArchiveArr(arc)
+                        return 'Restored'
                     }
                 },
                 error: {
                     render({ data }: { data: AxiosResponse }) {
-                        console.log(data)
+                        console.log(data, 'asd')
                         Swal.fire({
                             title: 'Error',
                             text: data.data?.message,
@@ -116,33 +105,33 @@ export default function PurchaseOrder() {
         )
     }
 
-    const confirmArchive = (id: string) => {
+    const confirmDelete = (id: string) => {
         Swal.fire({
-            title: 'Archive Confirmation',
-            text: 'Are you sure you want to continue?',
+            title: 'Delete Confirmation',
+            text: 'Are you sure you want to permanently delete?',
             icon: 'question',
             showCancelButton: true,
             showConfirmButton: true,
         })
         .then(response => {
             if (response.isConfirmed) {
-                archivePO(id)
+                deletePO(id)
             }
         })
     }
 
-    const archivePO = async (id: string) => {
+    const deletePO = async (id: string) => {
         const uid = store.user.id
         toast.promise(
-            axios.patch(`/api/purchase-order?order_id=${id}`, { user_id: uid }),
+            axios.delete(`/api/purchase-order/archive`, { params: { order_id: id, user_id: uid } }),
             {
-                pending: 'Archiving...',
+                pending: 'Deleting...',
                 success: {
                     render({ data }: { data: AxiosResponse }) {
-                        const po = data.data?.orders
-                        setOrders(po)
-                        setOrderArr(po)
-                        return 'Archived'
+                        const arc = data.data?.archive
+                        setArchive(arc)
+                        setArchiveArr(arc)
+                        return 'Deleted'
                     }
                 },
                 error: {
@@ -150,8 +139,8 @@ export default function PurchaseOrder() {
                         console.log(data)
                         Swal.fire({
                             title: 'Error',
-                            text: data.data?.message,
-                            icon: 'error'
+                            text: data.statusText,
+                            icon: 'error',
                         })
                         return 'Error'
                     }
@@ -160,10 +149,10 @@ export default function PurchaseOrder() {
         )
     }
 
-    return (
+    return(
         <div className="w-full">
             <ToastContainer position="bottom-right" />
-            <Header title="PURCHASE ORDERS" backTo={'/'} searchFunction={searchFunction} goTo={'/admin/purchase-order/create'} goTo2={{path: '/admin/purchase-order/archive', title: 'Archive'}} />
+            <Header title="PURCHASE ORDERS ARCHIVE" backTo={'/admin/purchase-order'} searchFunction={handleSearch} />
             <section className="w-full bg-white min-h-80 2xl:min-h-96 overflow-auto">
                 <table className="w-full table-auto md:table-fixed text-center text-xs">
                     <thead className="bg-gray-200">
@@ -182,7 +171,7 @@ export default function PurchaseOrder() {
                     </thead>
                     <tbody>
                         {
-                            orderArr.map((item,index) => {
+                            archive.map((item,index) => {
                                 return (
                                     <tr key={index}>
                                         <td className="border-x-2 border-black p-2">{item.status}</td>
@@ -196,17 +185,12 @@ export default function PurchaseOrder() {
                                         <td className="border-x-2 border-black p-2">{item.total_price.toFixed(2)}</td>
                                         <td className="border-x-2 border-black p-2">
                                             <div className="w-full flex flex-wrap justify-center items-center gap-2">
-                                                {
-                                                    item.status == 'pending' && (
-                                                        <button onClick={()=>confirmReceive(item)} className="p-2 rounded text-xs text-white font-bold bg-indigo-400 hover:bg-indigo-600">
-                                                            Receive
-                                                        </button>
-                                                    )
-                                                }
-                                                <button onClick={()=>confirmArchive(item._id)} className="p-2 rounded text-xs text-white font-bold bg-rose-400 hover:bg-rose-600">
-                                                    Archive
+                                                <button onClick={()=>confirmRestore(item._id)} className="p-2 rounded text-white text-sm font-bold bg-teal-400 hover:bg-teal-600">
+                                                    Restore
                                                 </button>
-                                                <button className="p-2 rounded text-xs text-white font-bold bg-cyan-400 hover:bg-cyan-600">Reorder</button>
+                                                <button onClick={()=>confirmDelete(item._id)} className="p-2 rounded text-white text-sm font-bold bg-rose-400 hover:bg-rose-600">
+                                                    Delete
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

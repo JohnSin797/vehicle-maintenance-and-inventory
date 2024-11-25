@@ -29,7 +29,7 @@ const ProfilePanel: FC<ProfileProps> = ({ isHidden, handleLogout, toggle }) => {
                 </section>
                 <div className="w-full h-96 flex flex-col gap-5">
                     <Link href={'/profile'} className="w-full p-2 rounded text-sm text-white text-center font-semibold bg-indigo-400 hover:bg-indigo-600">Profile</Link>
-                    <Link href={'/profile'} className="w-full p-2 rounded text-sm text-white text-center font-semibold bg-violet-400 hover:bg-violet-600">Change Password</Link>
+                    <Link href={'/account'} className="w-full p-2 rounded text-sm text-white text-center font-semibold bg-violet-400 hover:bg-violet-600">Account Settings</Link>
                     <button onClick={()=>handleLogout()} type="button" className="w-full p-2 rounded text-sm text-white font-semibold bg-blue-400 hover:bg-blue-600">logout</button>
                 </div>
             </div>

@@ -9,9 +9,18 @@ import { createSigner } from "fast-jwt";
 
 const ObjectId = Types.ObjectId;
 
-export const GET = async () => {
+export const GET = async (request: Request) => {
     try {
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('user_id');
         await connect();
+        if (userId) {
+            if (!Types.ObjectId.isValid(userId)) {
+                return new NextResponse(JSON.stringify({message: 'Invalid user id'}), {status: 400});
+            }
+            const user = await User.findOne({ _id: userId });
+            return new NextResponse(JSON.stringify({message: 'OK', user: user}), {status: 200});
+        }
         const users = await User.find().select('-password');
         return new NextResponse(JSON.stringify(users), {status: 200});
     } catch (error: unknown) {

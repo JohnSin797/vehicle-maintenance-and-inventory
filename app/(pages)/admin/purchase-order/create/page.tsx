@@ -116,6 +116,7 @@ export default function Create() {
                             quantity: 0,
                             total_price: 0,
                         })
+                        setTotalPrice(0)
                         return 'Purchase Order created'
                     }
                 },

@@ -3,7 +3,7 @@
 import Header from "@/app/components/Header"
 import { useAuthStore } from "@/app/stores/auth";
 import axios from "axios";
-import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react"
+import { FormEvent, useCallback, useEffect, useState } from "react"
 import { IoMdClose } from "react-icons/io";
 
 interface User {
@@ -62,10 +62,23 @@ export default function Report() {
 
     const handleSearch = (key: string) => {
         if (panel == 'mechanic') {
-
+            const temp = mechRepArr.filter(data => 
+                data.bus_number.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.first_name.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.middle_name.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.last_name.toLowerCase().includes(key.toLowerCase()) ||
+                data.report?.some(item => item.item_name.toLowerCase().includes(key.toLowerCase()))
+            )
+            setMechReports(temp)
         }
         else if (panel == 'inventory') {
-
+            const temp = reportsArr.filter(data => 
+                data.bus_number.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.first_name.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.middle_name.toLowerCase().includes(key.toLowerCase()) ||
+                data.driver?.last_name.toLowerCase().includes(key.toLowerCase()) 
+            )
+            setReports(temp)
         }
     }
 
@@ -129,11 +142,11 @@ export default function Report() {
 
     return(
         <div className="w-full">
-            <Header title="INVENTORY PERSONNEL'S REPORT" backTo={'/inventory'} goTo={'/inventory/repory/create'} searchFunction={handleSearch} />
+            <Header title="INVENTORY PERSONNEL'S REPORT" backTo={'/inventory'} searchFunction={handleSearch} />
             <div className={`${reportModal ? 'fixed top-0 left-0 w-full h-full bg-blue-950/50 backdrop-blur-md z-10 flex justify-center items-center' : 'hidden'}`}>
                 <section className="w-full md:w-2/5 bg-white rounded-lg p-5">
                     <header className="mb-5 flex justify-between items-center">
-                        <h1 className="text-xl font-semibold">CREATE INVENTORY PERSONNEL'S REPORT</h1>
+                        <h1 className="text-xl font-semibold">CREATE INVENTORY PERSONNEL&apos;S REPORT</h1>
                         <button 
                             onClick={()=>setReportModal(false)} 
                             className="p-2 rounded border border-white hover:border-rose-400 hover:text-rose-400 active:ring-2 ring-rose-400"
@@ -180,7 +193,7 @@ export default function Report() {
                         onClick={()=>setPanel('inventory')}
                         className={`p-2 hover:bg-blue-600 ${panel=='inventory'&& 'bg-blue-400'}`}
                     >
-                        INVENTORY PERSONNEL'S REPORTS
+                        INVENTORY PERSONNEL&apos;S REPORTS
                     </button>
                 </header>
             </section>

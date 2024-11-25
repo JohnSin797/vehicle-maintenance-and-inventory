@@ -1,10 +1,11 @@
 'use client'
 
 import Header from "@/app/components/Header"
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios"
 import { FormEvent, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
+import Swal from "sweetalert2"
 
 export default function Create() {
     const [itemName, setItemName] = useState<string>('')
@@ -22,8 +23,15 @@ export default function Create() {
                     }
                 },
                 error: {
-                    render({ data }: { data: AxiosResponse }) {
-                        return data.data?.message
+                    render({ data }: { data: AxiosError }) {
+                        console.log(data)
+                        const message = data.message
+                        Swal.fire({
+                            title: 'Error',
+                            text: message,
+                            icon: 'error'
+                        })
+                        return 'Error'
                     }
                 }
             }

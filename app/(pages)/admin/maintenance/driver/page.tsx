@@ -45,8 +45,7 @@ export default function DriverReport() {
             data.driver.middle_name.toLowerCase().includes(key.toLowerCase()) ||
             data.driver.last_name.toLowerCase().includes(key.toLowerCase()) ||
             data.conductor.toLowerCase().includes(key.toLowerCase()) ||
-            data.bus_number.toLowerCase().includes(key.toLowerCase()) || 
-            data.createdAt.toISOString().substring(0, 16).replace('T', ' ').toLowerCase().includes(key.toLowerCase()) 
+            data.bus_number.toLowerCase().includes(key.toLowerCase()) 
         )
         setReports(temp)
     }

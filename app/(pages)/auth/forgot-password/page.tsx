@@ -1,23 +1,31 @@
 'use client'
 
-import { useAuthStore } from "@/app/stores/auth"
+import axios from "axios"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { FormEvent, useState } from "react"
+import Swal from "sweetalert2"
 
 export default function ForgotPassword() {
-    const [changePassword, setChangePassword] = useState<boolean>(false)
-    const store = useAuthStore()
+    const [email, setEmail] = useState<string>('')
+    const router = useRouter()
 
-    useEffect(() => {
-
-    }, [])
-
-    const validate = () => {
-        const user = store.user
-        
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+        await axios.get(`/api/verify?email=${email}`)
+        .then(response => {
+            const user = response.data?.user
+            router.push(`/auth/forgot-password/${user?._id}`)
+        })
+        .catch(error => {
+            console.log(error)
+            Swal.fire({
+                title: 'Error',
+                text: error.response?.data?.message,
+                icon: 'error'
+            })
+        })
     }
-
-    const handleSubmit = () => {}
 
     return (
         <div className="w-full min-h-screen flex justify-center items-center">
@@ -26,56 +34,26 @@ export default function ForgotPassword() {
                     <Link href={'/auth/sign-in'} className="block p-2 rounded text-white text-xs font-bold bg-blue-400 hover:bg-blue-600">back</Link>
                     <h1 className="text-xl font-bold">Forgot Password</h1>
                 </header>
-                <div className="w-full space-y-2">
-                    <div className="group w-full">
-                        <label htmlFor="password_recovery_question" className="text-xs font-bold">Password Recovery Question:</label>
-                        <input 
-                            type="text" 
-                            name="password_recovery_question" 
-                            id="password_recovery_question" 
-                            className="w-full p-2 rounded text-sm ring-2 outline-none" 
-                            readOnly
-                        />
-                    </div>
-                    <div className="group w-full">
-                        <label htmlFor="password_recovery_answer" className="text-xs font-bold">Password Recovery Answer:</label>
-                        <input 
-                            type="text" 
-                            name="password_recovery_answer" 
-                            id="password_recovery_answer" 
-                            className="w-full p-2 rounded text-sm ring-2" 
-                        />
-                    </div>
-                    <div className={`${changePassword ? 'w-full space-y-2' : 'hidden'}`}>
+                <form onSubmit={handleSubmit}>
+                    <div className="w-full space-y-2">
                         <div className="group w-full">
-                            <label htmlFor="new_password" className="text-xs font-bold">New Password:</label>
+                            <label htmlFor="email" className="text-xs font-bold">Email:</label>
                             <input 
-                                type="text" 
-                                name="new_password" 
-                                id="new_password" 
-                                className="w-full p-2 rounded text-xs ring-2" 
+                                type="email" 
+                                name="email" 
+                                id="email" 
+                                className="w-full p-2 rounded text-sm ring-2 outline-none" 
+                                value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
+                                required
                             />
                         </div>
-                        <div className="group w-full">
-                            <label htmlFor="confirm_password" className="text-xs font-bold">Confirm Password:</label>
-                            <input 
-                                type="text" 
-                                name="confirm_password" 
-                                id="confirm_password" 
-                                className="w-full p-2 rounded text-xs ring-2" 
-                            />
+                        
+                        <div className="w-full flex justify-center items-center">
+                            <button className="p-2 rounded text-white text-xs font-bold bg-indigo-400 hover:bg-indigo-600">submit</button>
                         </div>
                     </div>
-                    <div className="w-full flex justify-center items-center">
-                        {
-                            changePassword ? (
-                                <button onClick={validate} type="button" className="p-2 rounded text-white text-xs font-bold bg-blue-400 hover:bg-blue-600">continue</button>
-                            ) : (
-                                <button onClick={handleSubmit} type="button" className="p-2 rounded text-white text-xs font-bold bg-indigo-400 hover:bg-indigo-600">submit</button>
-                            )
-                        }
-                    </div>
-                </div>
+                </form>
             </section>
         </div>
     )

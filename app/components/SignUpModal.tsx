@@ -4,7 +4,6 @@ import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import person from '@/assets/images/person.jpg';
 import lock from '@/assets/images/lock.jpg';
-import logo from '@/assets/images/app-logo.jpg';
 import Image from "next/image";
 import { MdEmail } from "react-icons/md";
 import { IoMdBriefcase } from "react-icons/io";
@@ -331,7 +330,6 @@ const SignUpModal: FC<SignUpProps> = ({ isHidden, setIsHidden }) => {
                                             onCreateOption={handleCreate}
                                             isClearable
                                         />
-                                        {}
                                     </div>
                                     <div className="group w-full">
                                         <label htmlFor="password_recovery_answer" className="text-xs font-bold">Answer:</label>

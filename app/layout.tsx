@@ -5,7 +5,6 @@ import { Suspense } from "react";
 import Loading from "./loading";
 import { AlertProvider } from "./contexts/AlertContext";
 import { ConfirmationProvider } from "./contexts/ConfirmationContext";
-import DashboardPanel from "./components/DashboardPanel";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

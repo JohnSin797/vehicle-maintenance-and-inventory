@@ -1,6 +1,6 @@
 import connect from "@/lib/db";
 import User from "@/lib/modals/users";
-import Notification from "@/lib/modals/notifications";
+// import Notification from "@/lib/modals/notifications";
 import bcryptjs from "bcryptjs";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";

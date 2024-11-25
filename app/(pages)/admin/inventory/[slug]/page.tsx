@@ -119,7 +119,7 @@ export default function Inventory({ params }: { params: { slug: string } }) {
                 <table className="w-full table-auto md:table-fixed">
                     <thead className="bg-gray-200">
                         <tr>
-                            <th className="border-r-2 border-b border-black p-2">Body No.</th>
+                            {/* <th className="border-r-2 border-b border-black p-2">Body No.</th> */}
                             <th className="border-x-2 border-b border-black p-2">Date</th>
                             <th className="border-x-2 border-b border-black p-2">Type</th>
                             <th className="border-x-2 border-b border-black p-2">Quantity Details</th>
@@ -130,7 +130,7 @@ export default function Inventory({ params }: { params: { slug: string } }) {
                             itemOut.map((item, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td className="border-r-2 border-b border-black p-2">{}</td>
+                                        {/* <td className="border-r-2 border-b border-black p-2">{}</td> */}
                                         <td className="border-r-2 border-b border-black p-2">{new Date(item.createdAt).toLocaleDateString('en-PH')}</td>
                                         <td className="border-r-2 border-b border-black p-2">{item.item_type.item_name}</td>
                                         <td className="border-r-2 border-b border-black p-2">{item.quantity}</td>
