@@ -5,6 +5,7 @@ import { useAuthStore } from "@/app/stores/auth";
 import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { IoMdClose } from "react-icons/io";
+import Swal from "sweetalert2";
 
 interface User {
     _id: string;
@@ -32,6 +33,7 @@ interface SubmittedReport {
 }
 
 interface inventoryReport {
+    _id: string;
     item_type: Item;
     quantity: number;
     recipient?: string;
@@ -140,9 +142,37 @@ export default function Report() {
         })
     }
 
+    const confirmArchive = (id: string) => {
+        Swal.fire({
+            title: 'Archive Confirmation',
+            text: 'Are you sure you want to archive',
+            icon: 'question',
+            showCancelButton: true,
+            showConfirmButton: true,
+        })
+        .then(response => {
+            if (response.isConfirmed) {
+                archiveReport(id)
+            }
+        })
+    }
+
+    const archiveReport = async (id: string) => {
+        const uid = store.user.id
+        await axios.patch(`/api/inventory-report?report_id=${id}`, { user_id: uid })
+        .then(response => {
+            const arc = response.data?.archive ?? []
+            setReports(arc)
+            setReportsArr(arc)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     return(
         <div className="w-full">
-            <Header title="INVENTORY PERSONNEL'S REPORT" backTo={'/inventory'} searchFunction={handleSearch} />
+            <Header title="INVENTORY PERSONNEL'S REPORT" backTo={'/inventory'} goTo2={{path: '/inventory/report/archive', title: 'Archive'}} searchFunction={handleSearch} />
             <div className={`${reportModal ? 'fixed top-0 left-0 w-full h-full bg-blue-950/50 backdrop-blur-md z-10 flex justify-center items-center' : 'hidden'}`}>
                 <section className="w-full md:w-2/5 bg-white rounded-lg p-5">
                     <header className="mb-5 flex justify-between items-center">
@@ -249,6 +279,7 @@ export default function Report() {
                             <th className="p-2 border-x-2 border-b border-black">Quantity</th>
                             <th className="p-2 border-x-2 border-b border-black">Bus Number</th>
                             <th className="p-2 border-x-2 border-b border-black">Driver</th>
+                            <th className="p-2 border-x-2 border-b border-black">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -265,6 +296,13 @@ export default function Report() {
                                             <span>{item.driver.middle_name} </span>
                                             <span>{item.driver.last_name} </span>
                                             <span>{item.driver.extension} </span>
+                                        </td>
+                                        <td className="p-2 border-x-2 border-b border-black">
+                                            <div className="w-full flex flex-wrap justify-center items-center gap-2">
+                                                <button onClick={()=>confirmArchive(item._id)} className="p-2 rounded text-white text-sm font-bold bg-rose-400 hover:bg-rose-600">
+                                                    Archive
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 )
